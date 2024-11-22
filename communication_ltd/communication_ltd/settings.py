@@ -47,6 +47,10 @@ INSTALLED_APPS = [
     'users', #our application
 ]
 
+LOGIN_REDIRECT_URL = '/'           # if user press login or logout button
+LOGOUT_REDIRECT_URL = '/login/'    # for the future updates
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -98,6 +102,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,
+        },
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',

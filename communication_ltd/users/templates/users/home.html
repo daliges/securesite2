@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to My App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+        }
+        nav {
+            text-align: center;
+            margin: 1rem 0;
+        }
+        nav a {
+            text-decoration: none;
+            color: #333;
+            margin: 0 1rem;
+            font-size: 1.2rem;
+        }
+        nav a:hover {
+            color: #007BFF;
+        }
+        main {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: #333;
+            color: #fff;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Welcome to My App</h1>
+    <p>Your one-stop solution for [Add short description of your app]</p>
+</header>
+
+<nav>
+    <a href="{% url 'login' %}">Log In</a>
+    <a href="{% url 'register' %}">Register</a>
+</nav>
+
+<main>
+    <h2>About My App</h2>
+    <p>
+        This is where you can provide information about your app. 
+        Use this section to explain what your app does and why users should register.
+    </p>
+
+    <p>[Add your custom content here]</p>
+</main>
+
+<footer>
+    <p>&copy; 2024 My App. All Rights Reserved.</p>
+</footer>
+
+</body>
+</html>
