@@ -11,16 +11,23 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import json
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+#loading jason file
+###with open(BASE_DIR / 'config.json', 'r', encoding='utf-8') as config_file:
+###    CONFIG = json.load(config_file)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-7mhq8*2k@7--u257ic7cer7q+(!czxx269ox3gu30&4@zbn2)y'
+
+#הוספתי אפשרות להצפנה
+###SALT = CONFIG["salt"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

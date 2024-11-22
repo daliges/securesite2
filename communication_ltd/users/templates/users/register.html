@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הרשמה</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            text-align: center;
+        }
+        form {
+            margin: 0 auto;
+            max-width: 300px;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>הרשמה למערכת</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <label for="username">שם משתמש:</label>
+        <input type="text" id="username" name="username" required>
+        
+        <label for="email">אימייל:</label>
+        <input type="email" id="email" name="email" required>
+        
+        <label for="password">סיסמה:</label>
+        <input type="password" id="password" name="password" required>
+        
+        <button type="submit">הרשם</button>
+    </form>
+</body>
+</html>
