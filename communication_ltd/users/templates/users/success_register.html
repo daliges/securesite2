@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Successful</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+        }
+        main {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+        h2 {
+            color: #4CAF50;
+        }
+        p {
+            font-size: 1.1rem;
+            color: #555;
+        }
+        .buttons {
+            margin-top: 2rem;
+        }
+        .buttons a {
+            display: inline-block;
+            margin: 0 10px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        .buttons a:hover {
+            background-color: #0056b3;
+        }
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: #333;
+            color: #fff;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Registration Successful</h1>
+    <p>Thank you for joining! Explore our features now.</p>
+</header>
+
+<main>
+    <h2>Congratulations!</h2>
+    <p>Your registration was completed successfully. What would you like to do next?</p>
+    <div class="buttons">
+        <a href="/">Go to Homepage</a>
+        <a href="{% url 'login' %}">Go to Login</a>
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2024 My App. All Rights Reserved.</p>
+</footer>
+
+</body>
+</html>
