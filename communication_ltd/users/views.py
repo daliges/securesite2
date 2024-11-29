@@ -1,4 +1,4 @@
-from django.shortcuts import render , HttpResponse
+from django.shortcuts import render , HttpResponse, redirect
 from django.http import HttpResponse
 
 from django.contrib.auth.password_validation import validate_password
@@ -22,11 +22,15 @@ def register(request):
         email = request.POST.get('email')           # such as email will be our username
         password = request.POST.get('password')
 
-        validate_password(password)
-        return HttpResponse(f"Password is valid!")  # last update
-
-        # כאן תוכל להוסיף לוגיקה לשמירת הנתונים במסד נתונים
-        return HttpResponse(f"משתמש {username} נרשם בהצלחה!")
+        response = validation_password(password)
+        if (response == 1):   #למה לא עם TRUE
+            #return HttpResponse(f"משתמש {username} נרשם בהצלחה!")
+            #return render(request, 'users/login.html')
+            #return render(request, 'users/success_register.html')
+            #return redirect('success_register')
+            return redirect('success_register')
+        else:
+            return HttpResponse(response)
     return render(request, 'users/register.html')
 
 def login(request):     # functions to call html file of login page 
@@ -35,3 +39,14 @@ def login(request):     # functions to call html file of login page
         email = request.POST.get('email')
         password = request.POST.get('password')
     return render(request, 'users/login.html')
+
+def validation_password(password):
+    try:
+        # פונקציה מובנית ב-Django לאימות סיסמאות מתוך קובץ ה-settings
+        validate_password(password)
+        return 1  # מחזיר 1 אם הסיסמה תקינה
+    except ValidationError as e:
+        return e.messages  # מחזיר את רשימת ההודעות במקרה של שגיאה
+    
+def success_register(request):
+    return render(request, 'users/success_register.html')

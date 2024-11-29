@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,19 +40,19 @@
     </style>
 </head>
 <body>
-    <h1>הרשמה למערכת</h1>
+    <h1>SIGN UP</h1>
     <form method="POST">
         {% csrf_token %}
-        <label for="username">שם משתמש:</label>
+        <label for="username">Username</label>
         <input type="text" id="username" name="username" required>
         
-        <label for="email">אימייל:</label>
+        <label for="email">Email</label>
         <input type="email" id="email" name="email" required>
         
-        <label for="password">סיסמה:</label>
+        <label for="password">Password</label>
         <input type="password" id="password" name="password" required>
         
-        <button type="submit">הרשם</button>
+        <button type="submit">Register</button>
     </form>
 </body>
 </html>
