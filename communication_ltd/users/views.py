@@ -24,6 +24,14 @@ def register(request):
         email = request.POST.get('email')           # such as email will be our username
         password = request.POST.get('password')
 
+        if  User.objects.filter(email=email).exists():
+            return render(request,'users/register.html',
+                          {
+                              'errors': ["Email is allready use."],
+                              'username': username,
+                              'email':email
+                      })
+
         password_check = validation_password(password)
         if password_check is not True:
             return render(request, 'users/register.html',
