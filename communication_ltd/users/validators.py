@@ -8,17 +8,18 @@ with open(r'communication_ltd/config.json', 'r') as config_file:
 
 class CustomPasswordValidator:
     def validate(self, password, user=None):
+        string_error = ""
         policy = CONFIG["password_policy"]
         if len(password) < policy["min_length"]:
-            raise ValidationError(f"Password must be at least {policy['min_length']} characters long.")
+           string_error +=  f"Password must be at least {policy['min_length']} characters long.\n"
         if policy["require_uppercase"] and not re.search(r'[A-Z]', password):
-            raise ValidationError("Password must contain at least one uppercase letter.")
+            string_error += "Password must contain at least one uppercase letter.\n"
         if policy["require_lowercase"] and not re.search(r'[a-z]', password):
-            raise ValidationError("Password must contain at least one lowercase letter.")
+            string_error += "Password must contain at least one lowercase letter.\n"
         if policy["require_number"] and not re.search(r'[0-9]', password):
-            raise ValidationError("Password must contain at least one number.")
+            string_error += "Password must contain at least one number.\n"
         if policy["require_special_character"] and not re.search(r'[!@#$%^&*(),.?\":{}|<>]', password):
-            raise ValidationError("Password must contain at least one special character.")
-
+            string_error += "Password must contain at least one special character.\n"
+        raise ValidationError(string_error)    
     def get_help_text(self):
         return "Your password must follow the configured policy."
