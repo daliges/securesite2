@@ -20,6 +20,7 @@ class CustomPasswordValidator:
             string_error += "Password must contain at least one number.\n"
         if policy["require_special_character"] and not re.search(r'[!@#$%^&*(),.?\":{}|<>]', password):
             string_error += "Password must contain at least one special character.\n"
-        raise ValidationError(string_error)    
+        if  string_error != "":
+            raise ValidationError(string_error) 
     def get_help_text(self):
         return "Your password must follow the configured policy."

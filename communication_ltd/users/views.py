@@ -5,6 +5,8 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from .models import User
+from django.contrib.auth.hashers import make_password
+
 # Create your views here.
 ###def home(request):
 ###    return HttpResponse("Welcome!!!!") # בכדי להחזיר טקסט חוזר מהבקשת  HTTPS
@@ -30,8 +32,9 @@ def register(request):
                           'username': username,
                           'email':email
                       })
-        #user = User.objects.create_user(username=username, email=email, password=password)   שמירת יוזרים עדיין לא בוצע
-        #user.save()
+        hashed_password = make_password(password)
+        user = User(username=username, email=email, password=hashed_password)   #שמירת יוזרים עדיין לא בוצע
+        user.save()
         return redirect('success_register')
     return render(request, 'users/register.html')
 
