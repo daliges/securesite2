@@ -49,17 +49,17 @@ def register(request):
 def login(request):     # functions to call html file of login page 
     if request.method == 'POST':
         username = request.POST.get('username')
-        email = request.POST.get('email')
+        #email = request.POST.get('email')
         password = request.POST.get('password')
-        ####עדיין לא נבדק לכאן הוספתי לוגיקה אם המשתמש קיים
-        ###try:
-        ###    user = User.objects.get(username=username)
-        ###    if user.password == password:
-        ###        return HttpResponse(f"{username} login successfuly")
-        ###    else:
-        ###        return render(request, 'users/login.html', {'error': "Invalid password"}) #להוסיף מה יקרה כאשר שם המשתמש או הסיסמא לא קיימים
-        ###except User.DoesNotExist:
-        ###    return render(request, 'users/login.html', {'error': "User does not exist"})
+        #עדיין לא נבדק לכאן הוספתי לוגיקה אם המשתמש קיים
+        try:
+            user = User.objects.get(username=username)
+            if user.user_check_password(password):
+                return HttpResponse(f"{username} login successfuly")
+            else:
+                return render(request, 'users/login.html', {'error': "Invalid password"}) #להוסיף מה יקרה כאשר שם המשתמש או הסיסמא לא קיימים
+        except User.DoesNotExist:
+            return render(request, 'users/login.html', {'error': "User does not exist"})
     return render(request, 'users/login.html')
 
 def validation_password(password):

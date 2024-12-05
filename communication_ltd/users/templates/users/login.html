@@ -24,6 +24,16 @@
             margin-bottom: 1rem;
             color: #333;
         }
+        .error {
+            background-color: #ffdddd;
+            color: #d8000c;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid #d8000c;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
         form {
             display: flex;
             flex-direction: column;
@@ -70,6 +80,14 @@
 
 <div class="container">
     <h2>Log In</h2>
+
+    <!-- Block to display errors -->
+    {% if error %}
+        <div class="error">
+            {{ error }}
+        </div>
+    {% endif %}
+
     <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
         <label for="email_or_username">Email or Username</label>
@@ -88,4 +106,3 @@
 
 </body>
 </html>
-
