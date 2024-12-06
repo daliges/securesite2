@@ -16,6 +16,16 @@ import json
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+with open(BASE_DIR / r"communication_ltd/config.json", 'r', encoding='utf-8') as config_file:
+    CONFIG = json.load(config_file)
+
+# Email settings from JSON
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = CONFIG["email_settings"]["server"]
+EMAIL_PORT = CONFIG["email_settings"]["port"]
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = CONFIG["email_settings"]["username"]
+EMAIL_HOST_PASSWORD = CONFIG["email_settings"]["password"]
 #loading jason file
 ###with open(BASE_DIR / 'config.json', 'r', encoding='utf-8') as config_file:
 ###    CONFIG = json.load(config_file)
@@ -97,21 +107,24 @@ DATABASES = {
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
+    #{
+    #    'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    #},
+    #{
+    #    'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    #    'OPTIONS': {
+    #        'min_length': 10,
+    #    },
+    #},
+    #{
+    #    'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    #},
+    #{
+    #    'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    #},
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-        'OPTIONS': {
-            'min_length': 10,
-        },
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+        'NAME': 'users.validators.CustomPasswordValidator',
+    }
 ]
 
 

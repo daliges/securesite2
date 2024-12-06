@@ -24,6 +24,16 @@
             margin-bottom: 1rem;
             color: #333;
         }
+        .error {
+            background-color: #ffdddd;
+            color: #d8000c;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid #d8000c;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
         form {
             display: flex;
             flex-direction: column;
@@ -64,12 +74,34 @@
             text-decoration: none;
             color: #007BFF;
         }
+        .change_password-link
+        {
+            text-decoration: none;
+            color: #007BFF;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .forgot_password-link
+        {
+            text-decoration: none;
+            color: #007BFF;
+            text-align: center;
+            margin-top: 1rem;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h2>Log In</h2>
+
+    <!-- Block to display errors -->
+    {% if error %}
+        <div class="error">
+            {{ error }}
+        </div>
+    {% endif %}
+
     <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
         <label for="email_or_username">Email or Username</label>
@@ -80,12 +112,19 @@
 
         <button type="submit">Log In</button>
     </form>
+    <div class="change_password-link">
+        <a href="{% url 'change_password' %}"> Change Password</a>
+    </div>
+
+    <div class="forgot_password-link">
+        <a href="{% url 'forgot_password' %}">forgot Password</a>
+    </div>
 
     <div class="register-link">
         <p>Don't have an account? <a href="{% url 'register' %}">Register here</a>.</p>
     </div>
+
 </div>
 
 </body>
 </html>
-
