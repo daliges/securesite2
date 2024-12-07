@@ -65,6 +65,12 @@
             text-align: left;
             font-size: 0.9rem;
         }
+        .login-link {
+            text-decoration: none;
+            color: #007BFF;
+            text-align: center;
+            margin-top: 1rem;
+        }
         .password-container
         {
             display: flex;
@@ -113,6 +119,9 @@
             <button type="button" class="toggle-password" onclick="togglePassword('password')">👁️</button>
         </div>
         <button type="submit">Register</button>
+        <div class="login-link">
+            <a href="{% url 'login' %}">Back to login</a>
+        </div>
     </form>
 </div>
 <script>

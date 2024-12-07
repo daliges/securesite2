@@ -65,7 +65,10 @@ def login(request):     # functions to call html file of login page
             if user.user_check_password(password):
                 return HttpResponse(f"{username} login successfuly")
             else:
-                return render(request, 'users/login.html', {'error': "Invalid password"}) #להוסיף מה יקרה כאשר שם המשתמש או הסיסמא לא קיימים
+                return render(request, 'users/login.html',{
+                                   'error': "Invalid password",
+                                   'username': username
+                                   }) 
         except User.DoesNotExist:
             return render(request, 'users/login.html', {'error': "User does not exist"})
     return render(request, 'users/login.html')
@@ -97,16 +100,33 @@ def change_password(request):
                     return render(request, 'users/change_password.html',
                                   {
                                       'errors': password_check,
+                                      'username': username,
+                                      'current_password': current_password
                                       })
                 if user.user_check_password(new_password):
-                     return render(request, 'users/change_password.html', {'errors': ["You entered the same password as your old password."]})
+                     return render(request, 'users/change_password.html', 
+                                   {
+                                       'errors': ["You entered the same password as your old password."],
+                                       'username': username,
+                                       'current_password': current_password
+                                         })
                 if new_password != retype_new_password:
-                    return render(request, 'users/change_password.html', {'errors': ["The new password you entered does not match the password you are repeating."]})
+                    return render(request, 'users/change_password.html', 
+                                  {
+                                      'errors': ["The new password you entered does not match the password you are repeating."],
+                                      'username': username,
+                                      'current_password': current_password
+                                      })
                 user.password = make_password(new_password)
                 user.save()
                 return HttpResponse(f"password of {username} changed successfuly")
             else:
-                return render(request, 'users/change_password.html', {'errors': ["Invalid password"]})
+                return render(request, 'users/change_password.html', 
+                              {
+                                  'errors': ["Invalid password"],
+                                  'username': username,
+                                  'current_password': current_password
+                                  })
         except User.DoesNotExist:
             return render(request, 'users/change_password.html', {'errors': ["User does not exist"]})
     return render(request, 'users/change_password.html') 
