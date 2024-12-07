@@ -12,7 +12,6 @@ from django.core.mail import send_mail
 import random
 import json
 
-from django.core.mail import send_mail
 # Create your views here.
 ###def home(request):
 ###    return HttpResponse("Welcome!!!!") # בכדי להחזיר טקסט חוזר מהבקשת  HTTPS
@@ -87,31 +86,30 @@ def success_register(request):
 def change_password(request):
     if request.method == 'POST':
         username = request.POST.get("username")
-        current_password = request.POST.get("current_passward")
-        new_password = request.POST.get("new_passward")
-        retype_new_password = request.POST.get("retype_new_passward")
+        current_password = request.POST.get("current_password")
+        new_password = request.POST.get("new_password")
+        retype_new_password = request.POST.get("retype_new_password")
         try:
             user = User.objects.get(username=username)
             if user.user_check_password(current_password):
-                password_check = validate_password(new_password)
+                password_check = validation_password(new_password)
                 if password_check is not True:
-                    render(request, 'users/change_password.html',
-                           {
-                               'errors': password_check,
-                           })
-                elif new_password != retype_new_password:
-                    render(request, 'users/change_password.html')#,"להוציא הודעה של לא טוב"
-                else:
-                    user.password = make_password(new_password)
-                    user.save()
-                    return HttpResponse(f"password of {username} changed successfuly")
+                    return render(request, 'users/change_password.html',
+                                  {
+                                      'errors': password_check,
+                                      })
+                if user.user_check_password(new_password):
+                     return render(request, 'users/change_password.html', {'errors': ["You entered the same password as your old password."]})
+                if new_password != retype_new_password:
+                    return render(request, 'users/change_password.html', {'errors': ["The new password you entered does not match the password you are repeating."]})
+                user.password = make_password(new_password)
+                user.save()
+                return HttpResponse(f"password of {username} changed successfuly")
             else:
-                render(request, 'users/change_password.html', {'error': "Invalid password"})
+                return render(request, 'users/change_password.html', {'errors': ["Invalid password"]})
         except User.DoesNotExist:
-            return render(request, 'users/change_password.html', {'error': "User does not exist"})
+            return render(request, 'users/change_password.html', {'errors': ["User does not exist"]})
     return render(request, 'users/change_password.html') 
-
-# אחסון זמני לקודים שנשלחים (למטרות בדיקות בלבד)
 
 
 
