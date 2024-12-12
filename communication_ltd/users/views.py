@@ -5,7 +5,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from .models import User
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 
 from django.core.mail import send_mail
 #from django.contrib.auth.models import User
@@ -95,6 +95,19 @@ def change_password(request):
         try:
             user = User.objects.get(username=username)
             if user.user_check_password(current_password):
+                password_history = [
+                    user.password_history1,
+                    user.password_history2,
+                    user.password_history3,
+                ]
+                for old_password in password_history:
+                    if old_password and check_password(new_password, old_password):
+                        return render(request, 'users/change_password.html',
+                                      {
+                                          'errors': ['The new password can\'t be the same as any of the last 3 passwords.'],
+                                          'username': username,
+                                          'current_password': current_password
+                                          })
                 password_check = validation_password(new_password)
                 if password_check is not True:
                     return render(request, 'users/change_password.html',
@@ -117,6 +130,10 @@ def change_password(request):
                                       'username': username,
                                       'current_password': current_password
                                       })
+                
+                user.password_history3 = user.password_history2
+                user.password_history2 = user.password_history1
+                user.password_history1 = user.password
                 user.password = make_password(new_password)
                 user.save()
                 return HttpResponse(f"password of {username} changed successfuly")
@@ -164,14 +181,3 @@ def forgot_password(request):
     return render(request, 'users/forgot_password.html')
 
 
-#            
-#            return render(request, 'users/forgot_password.html', {
-#                'success': 'Verification code sent to your email.',
-#                'email': email,
-#            })
-#        except User.DoesNotExist:
-#            return render(request, 'users/forgot_password.html', {
-#                'error': 'No account found with that email.'
-#            })
-#
-#    return render(request, 'users/forgot_password.html')
