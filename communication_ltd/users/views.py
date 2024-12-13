@@ -5,14 +5,14 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from .models import User
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 
 from django.core.mail import send_mail
 #from django.contrib.auth.models import User
 import random
 import json
-
-from django.core.mail import send_mail
+import smtplib
+from email.mime.text import MIMEText
 # Create your views here.
 ###def home(request):
 ###    return HttpResponse("Welcome!!!!") # בכדי להחזיר טקסט חוזר מהבקשת  HTTPS
@@ -33,6 +33,13 @@ def register(request):
         email = request.POST.get('email')           # such as email will be our username
         password = request.POST.get('password')
 
+        if  User.objects.filter(username=username).exists():
+            return render(request,'users/register.html',
+                          {
+                              'errors': ["username is allready use."],
+                              'username': username,
+                              'email':email
+                      })
         if  User.objects.filter(email=email).exists():
             return render(request,'users/register.html',
                           {
@@ -66,7 +73,10 @@ def login(request):     # functions to call html file of login page
             if user.user_check_password(password):
                 return HttpResponse(f"{username} login successfuly")
             else:
-                return render(request, 'users/login.html', {'error': "Invalid password"}) #להוסיף מה יקרה כאשר שם המשתמש או הסיסמא לא קיימים
+                return render(request, 'users/login.html',{
+                                   'error': "Invalid password",
+                                   'username': username
+                                   }) 
         except User.DoesNotExist:
             return render(request, 'users/login.html', {'error': "User does not exist"})
     return render(request, 'users/login.html')
@@ -87,43 +97,93 @@ def success_register(request):
 def change_password(request):
     if request.method == 'POST':
         username = request.POST.get("username")
-        current_password = request.POST.get("current_passward")
-        new_password = request.POST.get("new_passward")
-        retype_new_password = request.POST.get("retype_new_passward")
+        current_password = request.POST.get("current_password")
+        new_password = request.POST.get("new_password")
+        retype_new_password = request.POST.get("retype_new_password")
         try:
             user = User.objects.get(username=username)
             if user.user_check_password(current_password):
-                password_check = validate_password(new_password)
+                password_history = [
+                    user.password_history1,
+                    user.password_history2,
+                    user.password_history3,
+                ]
+                for old_password in password_history:
+                    if old_password and check_password(new_password, old_password):
+                        return render(request, 'users/change_password.html',
+                                      {
+                                          'errors': ['The new password can\'t be the same as any of the last 3 passwords.'],
+                                          'username': username,
+                                          'current_password': current_password
+                                          })
+                password_check = validation_password(new_password)
                 if password_check is not True:
-                    render(request, 'users/change_password.html',
-                           {
-                               'errors': password_check,
-                           })
-                elif new_password != retype_new_password:
-                    render(request, 'users/change_password.html')#,"להוציא הודעה של לא טוב"
-                else:
-                    user.password = make_password(new_password)
-                    user.save()
-                    return HttpResponse(f"password of {username} changed successfuly")
+                    return render(request, 'users/change_password.html',
+                                  {
+                                      'errors': password_check,
+                                      'username': username,
+                                      'current_password': current_password
+                                      })
+                if user.user_check_password(new_password):
+                     return render(request, 'users/change_password.html', 
+                                   {
+                                       'errors': ["You entered the same password as your old password."],
+                                       'username': username,
+                                       'current_password': current_password
+                                         })
+                if new_password != retype_new_password:
+                    return render(request, 'users/change_password.html', 
+                                  {
+                                      'errors': ["The new password you entered does not match the password you are repeating."],
+                                      'username': username,
+                                      'current_password': current_password
+                                      })
+                
+                user.password_history3 = user.password_history2
+                user.password_history2 = user.password_history1
+                user.password_history1 = user.password
+                user.password = make_password(new_password)
+                user.save()
+                return HttpResponse(f"password of {username} changed successfuly")
             else:
-                render(request, 'users/change_password.html', {'error': "Invalid password"})
+                return render(request, 'users/change_password.html', 
+                              {
+                                  'errors': ["Invalid password"],
+                                  'username': username,
+                                  'current_password': current_password
+                                  })
         except User.DoesNotExist:
-            return render(request, 'users/change_password.html', {'error': "User does not exist"})
+            return render(request, 'users/change_password.html', {'errors': ["User does not exist"]})
     return render(request, 'users/change_password.html') 
-
-# אחסון זמני לקודים שנשלחים (למטרות בדיקות בלבד)
-
 
 
 def send_reset_email(user_email, verification_code):
     email_settings = CONFIG['email_settings']
-    send_mail(
+    sender_email = email_settings['sender_email']
+    body = f"Your verification code "
+
+    """
+     send_mail(
         email_settings["subject_line"],
         f'Your verification code is: {verification_code}',  # Message body
         email_settings["username"],
         [user_email],  # To email
         fail_silently=False,
-    )
+    )"""
+
+    message = MIMEText(verification_code)
+    message["From"] = sender_email
+    message["To"] = user_email
+    message["Subject"] = body
+
+    try:
+        with smtplib.SMTP(email_settings['server'], email_settings['port']) as server:
+            server.starttls()  # Secure the connection
+            server.login(email_settings['username'], email_settings['password'])
+            server.sendmail(sender_email, user_email, message.as_string())
+            print("Email sent successfully!")
+    except Exception as e:
+        print(f"Error: {e}")
 
 
 verification_codes = {}
@@ -131,6 +191,7 @@ verification_codes = {}
 def forgot_password(request):
     if request.method == 'POST':
         email = request.POST.get('email')
+        user_verification_code = request.POST.get('email')
         try:
             user = User.objects.get(email=email)
             # Generate a verification code
@@ -140,20 +201,13 @@ def forgot_password(request):
             user.save()
             # Send email
             send_reset_email(user.email, verification_code)
-            return render(request, 'users/forgot_password.html', {'success': 'Verification code sent to your email.'})
+            return render(request, 'login/forgot_password/write-verification-code', {'success': 'Verification code sent to your email.'})
         except User.DoesNotExist:
             return render(request, 'users/forgot_password.html', {'error': 'Email does not exist.'})
     return render(request, 'users/forgot_password.html')
 
 
-#            
-#            return render(request, 'users/forgot_password.html', {
-#                'success': 'Verification code sent to your email.',
-#                'email': email,
-#            })
-#        except User.DoesNotExist:
-#            return render(request, 'users/forgot_password.html', {
-#                'error': 'No account found with that email.'
-#            })
-#
-#    return render(request, 'users/forgot_password.html')
+def write_verification_code(request):
+    #if request.method == 'POST':
+    #    verification_code = request.POST.get('verification_code')
+    return render(request, 'login/forgot_password/write-verification-code')

@@ -88,6 +88,22 @@
             text-align: center;
             margin-top: 1rem;
         }
+        .password-container
+        {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .password-container .toggle-password {
+            position: absolute;
+            top: 55%;
+            right: 6px;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -104,18 +120,18 @@
 
     <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
-        <label for="email_or_username">Email or Username</label>
-        <input type="text" id="email_or_username" name="username" placeholder="Enter your email or username" required>
-
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" placeholder="Enter your password" required>
-
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Enter your username" value="{{ username|default:'' }}" required>
+        <div  class="password-container">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            <button type="button" class="toggle-password" onclick="togglePassword('password')">👁️</button>
+        </div>
         <button type="submit">Log In</button>
     </form>
     <div class="change_password-link">
         <a href="{% url 'change_password' %}"> Change Password</a>
     </div>
-
     <div class="forgot_password-link">
         <a href="{% url 'forgot_password' %}">forgot Password</a>
     </div>
@@ -125,6 +141,13 @@
     </div>
 
 </div>
+<script>
+    function togglePassword(inputId) {
+        const passwordInput = document.getElementById(inputId);
+        const type = passwordInput.type === 'password' ? 'text' : 'password';
+        passwordInput.type = type;
+    }
+</script>
 
 </body>
 </html>
