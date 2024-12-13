@@ -11,7 +11,8 @@ from django.core.mail import send_mail
 #from django.contrib.auth.models import User
 import random
 import json
-
+import smtplib
+from email.mime.text import MIMEText
 # Create your views here.
 ###def home(request):
 ###    return HttpResponse("Welcome!!!!") # בכדי להחזיר טקסט חוזר מהבקשת  HTTPS
@@ -156,16 +157,33 @@ def change_password(request):
     return render(request, 'users/change_password.html') 
 
 
-
 def send_reset_email(user_email, verification_code):
     email_settings = CONFIG['email_settings']
-    send_mail(
+    sender_email = email_settings['sender_email']
+    body = f"Your verification code "
+
+    """
+     send_mail(
         email_settings["subject_line"],
         f'Your verification code is: {verification_code}',  # Message body
         email_settings["username"],
         [user_email],  # To email
         fail_silently=False,
-    )
+    )"""
+
+    message = MIMEText(verification_code)
+    message["From"] = sender_email
+    message["To"] = user_email
+    message["Subject"] = body
+
+    try:
+        with smtplib.SMTP(email_settings['server'], email_settings['port']) as server:
+            server.starttls()  # Secure the connection
+            server.login(email_settings['username'], email_settings['password'])
+            server.sendmail(sender_email, user_email, message.as_string())
+            print("Email sent successfully!")
+    except Exception as e:
+        print(f"Error: {e}")
 
 
 verification_codes = {}
@@ -173,6 +191,7 @@ verification_codes = {}
 def forgot_password(request):
     if request.method == 'POST':
         email = request.POST.get('email')
+        user_verification_code = request.POST.get('email')
         try:
             user = User.objects.get(email=email)
             # Generate a verification code
@@ -182,9 +201,13 @@ def forgot_password(request):
             user.save()
             # Send email
             send_reset_email(user.email, verification_code)
-            return render(request, 'users/forgot_password.html', {'success': 'Verification code sent to your email.'})
+            return render(request, 'login/forgot_password/write-verification-code', {'success': 'Verification code sent to your email.'})
         except User.DoesNotExist:
             return render(request, 'users/forgot_password.html', {'error': 'Email does not exist.'})
     return render(request, 'users/forgot_password.html')
 
 
+def write_verification_code(request):
+    #if request.method == 'POST':
+    #    verification_code = request.POST.get('verification_code')
+    return render(request, 'login/forgot_password/write-verification-code')
