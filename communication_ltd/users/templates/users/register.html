@@ -1,9 +1,13 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    <link rel ="stylesheet" href="{% static 'css/style.css' %}"> 
+    <script src="{% static 'js/password_strength.js' %}"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -78,14 +82,16 @@
             position: relative;
         }
         .password-container .toggle-password {
-            position: absolute;
-            top: 55%;
-            right: 6px;
+            position: relative;
+            bottom: 50px;
+            left: 350px;
             transform: translateY(-50%);
             background: none;
             border: none;
             cursor: pointer;
             font-size: 16px;
+            width: 20px;
+            height: 20px;
         }
     </style>
 </head>
@@ -117,19 +123,17 @@
             <label for="password">Password</label>
             <input type="password" id="password" name="password" placeholder="Enter your password" required>
             <button type="button" class="toggle-password" onclick="togglePassword('password')">👁️</button>
+        <!--<div id="password-strength-container"> -->
+            <progress id="password-strength-bar" value="0" max="5" style="width: 100%;"></progress>
+            <ul id="password-feedback" style="color: red; font-size: 0.9rem;"></ul>
+        <!-- <div id="strength-text" class="strength-text"> Password Strenght</div> -->
         </div>
+
         <button type="submit">Register</button>
         <div class="login-link">
             <a href="{% url 'login' %}">Back to login</a>
         </div>
     </form>
 </div>
-<script>
-    function togglePassword(inputId) {
-        const passwordInput = document.getElementById(inputId);
-        const type = passwordInput.type === 'password' ? 'text' : 'password';
-        passwordInput.type = type;
-    }
-</script>
 </body>
 </html>

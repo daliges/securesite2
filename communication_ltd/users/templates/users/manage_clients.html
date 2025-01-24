@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Clients</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 5% auto;
+            padding: 2rem;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: #555;
+        }
+        input, textarea {
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        textarea {
+            resize: none;
+        }
+        button {
+            padding: 0.8rem;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .client-list {
+            margin-top: 2rem;
+        }
+        .client-list h3 {
+            color: #333;
+        }
+        .client-item {
+            background-color: #f9f9f9;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Manage Clients</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label for="client_name">Client Name</label>
+        <input type="text" id="client_name" name="client_name" placeholder="Enter client name" required>
+        
+        <label for="client_address">Client Address</label>
+        <textarea id="client_address" name="client_address" placeholder="Enter client address" rows="4" required></textarea>
+        
+        <button type="submit">Add Client</button>
+    </form>
+
+    <div class="client-list">
+        <h3>Your Clients:</h3>
+        {% for client in clients %}
+            <div class="client-item">
+                <strong>Name:</strong> {{ client.client_name }} <br>
+                <strong>Address:</strong> {{ client.client_address }} <br>
+                <strong>Created At:</strong> {{ client.client_created_at }}
+            </div>
+        {% empty %}
+            <p>No clients added yet.</p>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>

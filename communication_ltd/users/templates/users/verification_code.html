@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgot Password</title>
+    <title>write_verification_code</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -68,17 +68,7 @@
         button:hover {
             background-color: #0056b3;
         }
-        .login-link {
-            text-decoration: none;
-            color: #007BFF;
-            text-align: center;
-            margin-top: 1rem;
-        }
-        .register-link {
-            text-align: center;
-            margin-top: 1rem;
-        }
-        .register-link a {
+        .forgot-password-link a {
             text-decoration: none;
             color: #007BFF;
         }
@@ -87,8 +77,8 @@
 <body>
 
 <div class="container">
-    <h2>Trouble logging in?</h2>
-    <p>Enter your email, and we'll send you a code to reset your password.</p>
+    <h2>write verification code</h2>
+    <p>Enter your verification code, that  you got.</p>
 
     <!-- Display success or error messages -->
     {% if success %}
@@ -99,14 +89,11 @@
 
     <form method="post" action="">
         {% csrf_token %}
-        <input type="email" name="email" placeholder="Enter your email" required>
-        <button type="submit">Send Verification Code</button>
+        <input type="password" name="verification_code" placeholder="Enter your verification code" required>
+        <button type="submit">submit</button>
     </form>
-    <div class="login-link">
-        <a href="{% url 'login' %}">Back to login</a>
-    </div>
-    <div class="register-link">
-        <p>Don't have an account? <a href="{% url 'register' %}">Register here</a>.</p>
+    <div class="forgot_password-link">
+        <p>Don't get verification code? <a href="{% url 'forgot_password' %}">click here</a>.</p>
     </div>
 </div>
 

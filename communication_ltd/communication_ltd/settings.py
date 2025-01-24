@@ -11,33 +11,22 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-import json
+from dotenv import load_dotenv
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-with open(BASE_DIR / r"communication_ltd/config.json", 'r', encoding='utf-8') as config_file:
-    CONFIG = json.load(config_file)
+load_dotenv()
 
-# Email settings from JSON
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = CONFIG["email_settings"]["server"]
-EMAIL_PORT = CONFIG["email_settings"]["port"]
+EMAIL_HOST = os.getenv('EMAIL_SERVER')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = CONFIG["email_settings"]["username"]
-EMAIL_HOST_PASSWORD = CONFIG["email_settings"]["password"]
-#loading jason file
-###with open(BASE_DIR / 'config.json', 'r', encoding='utf-8') as config_file:
-###    CONFIG = json.load(config_file)
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-7mhq8*2k@7--u257ic7cer7q+(!czxx269ox3gu30&4@zbn2)y'
-
-#הוספתי אפשרות להצפנה
-###SALT = CONFIG["salt"]
+EMAIL_HOST_USER = os.getenv('EMAIL_USERNAME')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
+EMAIL_SENDER = os.getenv('EMAIL_SENDER_EMAIL')
+SECRET_KEY = os.getenv('EMAIL_SECRET_KEY', 'default-fallback-secret-key') ##### HMAC
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -55,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users', #our application
+    'django_extensions',
+    'explorer',
 ]
 
 LOGIN_REDIRECT_URL = '/'           # if user press login or logout button
@@ -116,15 +107,20 @@ AUTH_PASSWORD_VALIDATORS = [
     #        'min_length': 10,
     #    },
     #},
-    #{
-    #    'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    #},
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
     #{
     #    'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     #},
     {
         'NAME': 'users.validators.CustomPasswordValidator',
     }
+]
+
+# Password hashers - Use PBKDF2 for password hashing (HMAC + Salt)
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
 ]
 
 
@@ -144,6 +140,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+
+SECURE_SSL_REDIRECT = True  # ניתוב בקשות HTTP ל-HTTPS
+SESSION_COOKIE_SECURE = True  # הבטחת עוגיות נשלחות רק על HTTPS
+CSRF_COOKIE_SECURE = True  # הגנה על CSRF באמצעות HTTPS  # Use secure cookies with HMAC
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
