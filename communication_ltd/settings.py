@@ -15,17 +15,17 @@ from dotenv import load_dotenv
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent
 
 load_dotenv()
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.getenv('EMAIL_SERVER')
-EMAIL_PORT = os.getenv('EMAIL_PORT')
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.getenv('EMAIL_USERNAME')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
-EMAIL_SENDER = os.getenv('EMAIL_SENDER_EMAIL')
+# EMAIL_HOST = os.getenv('EMAIL_SERVER')
+# EMAIL_PORT = os.getenv('EMAIL_PORT')
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = os.getenv('EMAIL_USERNAME')
+# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
+# EMAIL_SENDER = os.getenv('EMAIL_SENDER_EMAIL')
 SECRET_KEY = os.getenv('EMAIL_SECRET_KEY', 'default-fallback-secret-key') ##### HMAC
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -48,8 +48,9 @@ INSTALLED_APPS = [
     'explorer',
 ]
 
-LOGIN_REDIRECT_URL = '/'           # if user press login or logout button
-LOGOUT_REDIRECT_URL = '/login/'    # for the future updates
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/user_home/'           # if user press login or logout button
+LOGOUT_REDIRECT_URL = '/'    # for the future updates
 
 
 MIDDLEWARE = [
@@ -67,7 +68,7 @@ ROOT_URLCONF = 'communication_ltd.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -140,8 +141,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  # Ensure this is correct
+]
+
 
 SECURE_SSL_REDIRECT = True  # ניתוב בקשות HTTP ל-HTTPS
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Store sessions in the database
+SESSION_COOKIE_AGE = 1209600  # Sessions expire after 2 weeks (in seconds)
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Keep session active after browser close
 SESSION_COOKIE_SECURE = True  # הבטחת עוגיות נשלחות רק על HTTPS
 CSRF_COOKIE_SECURE = True  # הגנה על CSRF באמצעות HTTPS  # Use secure cookies with HMAC
 

@@ -1,15 +1,19 @@
 from django.shortcuts import render , HttpResponse, redirect
-from django.http import HttpResponse
-#from django.contrib.auth.password_validation import validate_password
-#from django.core.exceptions import ValidationError
+from django.contrib.auth import authenticate, login
+from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 #from django.http import JsonResponse
 from .models import User, Client
 from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.password_validation import CommonPasswordValidator 
 import random
 import json
 from users.utils import *
 from datetime import datetime, timedelta
 import threading
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import AnonymousUser
 
 
 with open(r"communication_ltd/config.json", "r") as file:
@@ -18,6 +22,7 @@ with open(r"communication_ltd/config.json", "r") as file:
 # functions to call html file of home page
 def home(request):       
     return render(request, 'users/home.html')
+
 # page of registeration
 def register(request):
     if request.method == 'POST':
@@ -38,14 +43,24 @@ def register(request):
                               'username': username,
                               'email':email
                       })
-        password_check = validation_password(password)
-        if password_check is not True:
-            return render(request, 'users/register.html',
-                      {
-                          'errors': password_check,
-                          'username': username,
-                          'email':email
-                      })
+        # password_check = validate_password(password) ##### validation_ -> validate_
+        # if password_check is not True:
+        #     return render(request, 'users/register.html',
+        #               {
+        #                   'errors': ["Your password is too common or invalid"],
+        #                   'username': username,
+        #                   'email':email,
+        #               })
+
+        try:
+            validate_password(password)
+        except ValidationError as e:
+            return render(request, 'users/register.html', {
+                'errors': e.messages,  # Pass validation error messages to the template
+                'username': username,
+                'email': email
+            })
+        
         hashed_password = make_password(password)
         user = User(username=username, email=email, password=hashed_password)   
         user.save()
@@ -53,19 +68,27 @@ def register(request):
     return render(request, 'users/register.html')
 
 # page of login 
-def login(request):     
+def login(request):
+    next_url = request.GET.get('next', '/user-home/')  # Redirect to intended page or home by default
+
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
+
         try:
             user = User.objects.get(username=username)
-            if user.is_blocked:
+
+            if hasattr(user, 'is_blocked') and user.is_blocked: # added hasattr to handle 2 cases
                 return  render(request, 'users/login.html',{
                                    'error': f"{username} is blocked for a {int(CONFIG['time_to_block']/60)} minutes",
                                    })
             if user.user_check_password(password):
                 user.action_count = 0
-                return redirect('user_home')
+
+                if not request.user.is_authenticated: ######
+                    return HttpResponseRedirect(request.POST.get('next', next_url))
+                else:
+                    return HttpResponseRedirect('/user-home/')  # Redirect to the intended page
             else:
                 user_login_management(user,CONFIG['time_to_block'])
                 return render(request, 'users/login.html',{
@@ -74,7 +97,7 @@ def login(request):
                                    }) 
         except User.DoesNotExist:
             return render(request, 'users/login.html', {'error': "User or Password does not exist"})
-    return render(request, 'users/login.html')
+    return render(request, 'users/login.html', {'next': next_url})
 
 # page of succession    
 def success_register(request):
@@ -238,29 +261,86 @@ def change_password_after_verfication_code(request):
         except User.DoesNotExist:
             return render(request, 'users/change_password_after_verification_code.html', {'errors': ["User does not exist"]})
     return render(request, 'users/change_password_after_verification_code.html')
-    
-def clients(request):
-    return render(request, 'users/clients.html')
+
 
 def user_home(request):      # # functions to call html file of home page 
     return render(request, 'users/user_home.html')
 
-##alan
+def account(request):
+    return render(request, 'users/account.html')
 
-def manage_clients(request):
-    if not request.user.is_authenticated:
+# @login_required(login_url='/login/')
+def clients_page(request):
+    # if not request.user.is_authenticated:
+    #     return redirect('clients_page')  
+    
+    #user = request.user 
+    
+    # Ensure the user is authenticated before proceeding
+    if not request.user or isinstance(request.user, AnonymousUser):
         return redirect('login')
 
-    user = request.user
+    user = request.user  # Now safe to use as user is authenticated 
 
     if request.method == 'POST':
-        client_name = request.POST.get('client_name')
-        client_address = request.POST.get('client_address')
+        if 'delete_client' in request.POST:
+            client_id = request.POST.get('delete_client')
+            Client.objects.filter(user=user, client_id=client_id).delete()
+        else:
+            client_name = request.POST.get('client_name')
+            client_address = request.POST.get('client_address')
 
-        if client_name and client_address:
-            client_id = f"CL-{random.randint(1000, 9999)}"
-            client = Client(user=user, client_id=client_id, client_name=client_name, client_address=client_address)
-            client.save()
+            if client_name and client_address:
+                client_id = f"CL-{random.randint(1000, 9999)}"
+                client = Client(user=user, client_id=client_id, client_name=client_name, client_address=client_address)
+                client.save()
 
     clients = Client.objects.filter(user=user)
-    return render(request, 'users/manage_clients.html', {'clients': clients})
+    return render(request, 'users/clients_page.html', {'clients': clients}) 
+# def clients(request):
+#     return render(request, 'users/clients.html')
+
+# def user_home(request):      # # functions to call html file of home page 
+#     return render(request, 'users/user_home.html')
+
+##alan
+
+# def manage_clients(request):
+#     if not request.User.is_authenticated:
+#         return redirect('login')
+
+#     user = request.User
+
+#     if request.method == 'POST':
+#         client_name = request.POST.get('client_name')
+#         client_address = request.POST.get('client_address')
+
+#         if client_name and client_address:
+#             client_id = f"CL-{random.randint(1000, 9999)}"
+#             client = Client(user=User, client_id=client_id, client_name=client_name, client_address=client_address)
+#             client.save()
+
+#     clients = Client.objects.filter(user=User)
+#     return render(request, 'users/manage_clients.html', {'clients': clients})
+
+#daniel
+
+# @login_required 
+# def manage_clients(request):
+#     user = request.user
+
+#     if request.method == 'POST':
+#         if 'delete_client' in request.POST:
+#             client_id = request.POST.get('delete_client')
+#             Client.objects.filter(user=user, client_id=client_id).delete()
+#         else:
+#             client_name = request.POST.get('client_name')
+#             client_address = request.POST.get('client_address')
+
+#             if client_name and client_address:
+#                 client_id = f"CL-{random.randint(1000, 9999)}"
+#                 client = Client(user=user, client_id=client_id, client_name=client_name, client_address=client_address)
+#                 client.save()
+
+#     clients = Client.objects.filter(user=user)
+#     return render(request, 'users/manage_clients.html', {'clients': clients})
