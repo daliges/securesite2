@@ -70,26 +70,14 @@
             text-align: center;
             margin-top: 1rem;
         }
-        .register-link a {
+        .register-link a, .change_password-link a, .forgot_password-link a {
             text-decoration: none;
             color: #007BFF;
-        }
-        .change_password-link
-        {
-            text-decoration: none;
-            color: #007BFF;
+            display: block;
             text-align: center;
             margin-top: 1rem;
         }
-        .forgot_password-link
-        {
-            text-decoration: none;
-            color: #007BFF;
-            text-align: center;
-            margin-top: 1rem;
-        }
-        .password-container
-        {
+        .password-container {
             display: flex;
             flex-direction: column;
             position: relative;
@@ -103,6 +91,14 @@
             border: none;
             cursor: pointer;
             font-size: 16px;
+        }
+        .remember-me {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .remember-me input {
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -122,18 +118,27 @@
         {% csrf_token %}
         <label for="username">Username</label>
         <input type="text" id="username" name="username" placeholder="Enter your username" value="{{ username|default:'' }}" required>
-        <div  class="password-container">
+        
+        <div class="password-container">
             <label for="password">Password</label>
             <input type="password" id="password" name="password" placeholder="Enter your password" required>
             <button type="button" class="toggle-password" onclick="togglePassword('password')">👁️</button>
         </div>
+
+        <!-- Remember Me Checkbox -->
+        <div class="remember-me">
+            <input type="checkbox" id="remember_me" name="remember_me">
+            <label for="remember_me">Remember Me</label>
+        </div>
+
         <button type="submit">Log In</button>
     </form>
+
     <div class="change_password-link">
         <a href="{% url 'change_password' %}"> Change Password</a>
     </div>
     <div class="forgot_password-link">
-        <a href="{% url 'forgot_password' %}">forgot Password</a>
+        <a href="{% url 'forgot_password' %}">Forgot Password</a>
     </div>
 
     <div class="register-link">

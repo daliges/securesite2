@@ -1,5 +1,5 @@
 from django.shortcuts import render , HttpResponse, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
@@ -74,6 +74,7 @@ def login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
+        remember_me = request.POST.get('remember_me')
 
         try:
             user = User.objects.get(username=username)
@@ -85,10 +86,22 @@ def login(request):
             if user.user_check_password(password):
                 user.action_count = 0
 
-                if not request.user.is_authenticated: ######
-                    return HttpResponseRedirect(request.POST.get('next', next_url))
+                # if not request.user.is_authenticated: ######
+                #     return HttpResponseRedirect(request.POST.get('next', next_url))
+                # else:
+                #     return HttpResponseRedirect('/user-home/')  # Redirect to the intended page
+
+                # Authenticate and log in the user using Django's session framework
+                auth_login(request, user)
+
+                # Remember Me logic
+                if remember_me:
+                    request.session.set_expiry(1209600)  # 2 weeks
                 else:
-                    return HttpResponseRedirect('/user-home/')  # Redirect to the intended page
+                    request.session.set_expiry(0)  # Expire on browser close
+
+                # Redirect the user accordingly
+                return HttpResponseRedirect(request.POST.get('next', next_url))
             else:
                 user_login_management(user,CONFIG['time_to_block'])
                 return render(request, 'users/login.html',{

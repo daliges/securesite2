@@ -20,12 +20,12 @@ BASE_DIR = Path(__file__).resolve().parent
 load_dotenv()
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = os.getenv('EMAIL_SERVER')
-# EMAIL_PORT = os.getenv('EMAIL_PORT')
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = os.getenv('EMAIL_USERNAME')
-# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
-# EMAIL_SENDER = os.getenv('EMAIL_SENDER_EMAIL')
+EMAIL_HOST = os.getenv('EMAIL_SERVER')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('EMAIL_USERNAME')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
+EMAIL_SENDER = os.getenv('EMAIL_SENDER_EMAIL')
 SECRET_KEY = os.getenv('EMAIL_SECRET_KEY', 'default-fallback-secret-key') ##### HMAC
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -47,6 +47,9 @@ INSTALLED_APPS = [
     'django_extensions',
     'explorer',
 ]
+
+# Custom user model setting
+AUTH_USER_MODEL = 'users.User'
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/user_home/'           # if user press login or logout button
@@ -147,7 +150,7 @@ STATICFILES_DIRS = [
 
 
 SECURE_SSL_REDIRECT = True  # ניתוב בקשות HTTP ל-HTTPS
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Store sessions in the database
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'  # Store sessions in the cookies
 SESSION_COOKIE_AGE = 1209600  # Sessions expire after 2 weeks (in seconds)
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Keep session active after browser close
 SESSION_COOKIE_SECURE = True  # הבטחת עוגיות נשלחות רק על HTTPS
