@@ -22,12 +22,12 @@
             z-index: 1000;
         }
         header h1 {
-            color: green;
+            color: rgb(248, 250, 248);
             margin: 0;
         }
         nav {
             background-color: #f4f4f4;
-            padding: 0.5rem 0;
+            padding: 1rem 0;
             position: fixed;
             width: 100%;
             top: 60px;
@@ -35,10 +35,11 @@
             text-align: center;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-        nav a {
+        nav a, nav form {
+            display: inline-block;
             text-decoration: none;
             color: #333;
-            margin: 0 1rem;
+            margin: 0 2rem;
             font-size: 1rem;
         }
         nav a:hover {
@@ -101,7 +102,7 @@
 </header>
 
 <nav>
-    <a href="user_home.html">Home</a>
+    <a href="{% url 'user_home' %}">Home</a>
 
     <!-- Authentication links -->
     {% if user.is_authenticated %}

@@ -62,6 +62,7 @@
 <nav>
     <!-- Link to Clients Page -->
     <a href="{% url 'clients_page' %}">Clients</a>
+    <a href="{% url 'change_password' %}"> Change Password</a>
     <form method="POST" action="{% url 'logout' %}">
         {% csrf_token %}
         <button type="submit" class="btn btn-danger">Logout</button>

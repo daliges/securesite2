@@ -5,10 +5,28 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.db import models
 from django.contrib.auth.hashers import check_password
 
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+import re
+
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password=None):
         if not email:
             raise ValueError("Users must have an email address")
+        
+        # Validate email
+        try:
+            validate_email(email)
+        except ValidationError:
+            raise ValueError("Invalid email format")
+        
+        # Sanitize username (remove leading/trailing spaces)
+        username = username.strip()
+
+        # Validate username format (allowed characters: letters, numbers, @, ., _, -)
+        if not re.match(r'^[a-zA-Z0-9@._-]+$', username):
+            raise ValidationError("Invalid characters in username")
+        
         user = self.model(username=username, email=self.normalize_email(email))
         user.set_password(password)
         user.save(using=self._db)
