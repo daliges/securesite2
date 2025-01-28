@@ -27,12 +27,15 @@
         }
         nav {
             background-color: #f4f4f4;
-            padding: 1rem 0;
+            padding: 1rem;
             position: fixed;
             width: 100%;
             top: 60px;
             z-index: 999;
-            text-align: center;
+            display: flex;
+            justify-content: center; /* Center content */
+            align-items: center; 
+            gap: 20px; /* Adds spacing */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         nav a, nav form {
@@ -40,7 +43,7 @@
             text-decoration: none;
             color: #333;
             margin: 0 2rem;
-            font-size: 1rem;
+            font-size: 1.5rem;
         }
         nav a:hover {
             color: #007BFF;
@@ -101,17 +104,18 @@
     <h1>Clients Management</h1>
 </header>
 
-<nav>
-    <a href="{% url 'user_home' %}">Home</a>
+<nav style="display: flex; justify-content: space-between; align-items: center; padding: 1rem;">
+    <!-- Home link aligned to the left -->
+    <a href="{% url 'user_home' %}" style="margin-left: 2rem;">Home</a>
 
-    <!-- Authentication links -->
+    <!-- Logout button aligned to the right -->
     {% if user.is_authenticated %}
-    <form method="POST" action="{% url 'logout' %}">
+    <form method="POST" action="{% url 'logout' %}" style="margin-right: 2rem;">
         {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Logout</button>
+        <button type="submit" style="background-color: red; color: white; border: none; padding: 10px 20px; font-size: 1rem; border-radius: 5px; cursor: pointer;">
+            Logout
+        </button>
     </form>
-    {% else %}
-        <a href="{% url 'login' %}?next={{ request.path }}">Login</a>
     {% endif %}
 </nav>
 

@@ -155,6 +155,11 @@ SESSION_COOKIE_AGE = 1209600  # Sessions expire after 2 weeks (in seconds)
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Keep session active after browser close
 SESSION_COOKIE_SECURE = True  # הבטחת עוגיות נשלחות רק על HTTPS
 CSRF_COOKIE_SECURE = True  # הגנה על CSRF באמצעות HTTPS  # Use secure cookies with HMAC
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+    'https://127.0.0.1:8000',
+] # prevent CSRF
 
 
 # Default primary key field type
