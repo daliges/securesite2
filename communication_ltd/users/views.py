@@ -270,7 +270,8 @@ def change_password_after_verfication_code(request):
             del request.session['verified_user']
             del request.session['verification_code_verified']
             del request.session['verification_code_timestamp']
-            return HttpResponse(f"password of {email} changed successfuly")
+            # return HttpResponse(f"password of {email} changed successfuly")
+            return redirect('success_register')
         except User.DoesNotExist:
             return render(request, 'users/change_password_after_verification_code.html', {'errors': ["User does not exist"]})
     return render(request, 'users/change_password_after_verification_code.html')

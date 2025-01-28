@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Fetch the config JSON file
-    fetch('/static/config.json')  // הנתיב לתיקייה הסטטית
+    fetch('/static/config.json')  // Path to the static directory
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Failed to load config.json: ${response.status}`);
@@ -12,15 +12,19 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("Password policy loaded:", policy);
 
             // Add event listener to check password strength
-            const passwordInput = document.getElementById("password") || document.getElementById("new_password");;
+            const passwordInput = document.getElementById("password") || document.getElementById("new_password");
             const feedbackContainer = document.getElementById("password-feedback");
             const strengthBar = document.getElementById("password-strength-bar");
 
-            passwordInput.addEventListener("input", function () {
-                const password = passwordInput.value;
-                const feedback = validatePassword(password, policy);
-                displayFeedback(feedback, feedbackContainer, strengthBar);
-            });
+            if (passwordInput) {
+                passwordInput.addEventListener("input", function () {
+                    const password = passwordInput.value;
+                    const feedback = validatePassword(password, policy);
+                    displayFeedback(feedback, feedbackContainer, strengthBar);
+                });
+            } else {
+                console.error("Password input field not found.");
+            }
         })
         .catch(error => console.error("Error loading config.json:", error));
 });
@@ -30,75 +34,96 @@ function validatePassword(password, policy) {
     const feedback = [];
     let score = 0;
 
+    // Check password length
     if (password.length < policy.min_length) {
         feedback.push(`Password must be at least ${policy.min_length} characters.`);
     } else {
-        score += 1;
+        score++;
     }
 
+    // Check for uppercase letters
     if (policy.require_uppercase && !/[A-Z]/.test(password)) {
         feedback.push("Password must include at least one uppercase letter.");
     } else {
-        score += 1;
+        score++;
     }
 
+    // Check for lowercase letters
     if (policy.require_lowercase && !/[a-z]/.test(password)) {
         feedback.push("Password must include at least one lowercase letter.");
     } else {
-        score += 1;
+        score++;
     }
 
+    // Check for numbers
     if (policy.require_number && !/[0-9]/.test(password)) {
         feedback.push("Password must include at least one number.");
     } else {
-        score += 1;
+        score++;
     }
 
+    // Check for special characters
     if (policy.require_special_character && !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
         feedback.push("Password must include at least one special character.");
     } else {
-        score += 1;
+        score++;
     }
 
     return { feedback, score };
 }
 
+// Function to update the color of the progress bar based on score
 function updateBarColor(bar, score) {
-    bar.value = score;
-    if (score === 0) {
-        bar.style.backgroundColor = "#808080"; // Gray (nothing)
-    }else if (score === 1) {
-            bar.style.backgroundColor = "#ff4d4d"; // Red (Very Weak)
-    } else if (score === 2) {
-        bar.style.backgroundColor = "#ffcc00"; // Yellow (Weak)
-    } else if (score === 3) {
-        bar.style.backgroundColor = "#ffcc00"; // Yellow (Fair)
-    } else if (score === 4) {
-        bar.style.backgroundColor = "#66cc00"; // Green (Good)
-    } else {
-        bar.style.backgroundColor = "#00b300"; // Dark Green (Strong)
-    }
-}
+    let color;
 
+    switch (score) {
+        case 1:
+            color = "#c7340c"; // Very Weak (Dark Red)
+            break;
+        case 2:
+            color = "#ce7a0c"; // Weak (Orange)
+            break;
+        case 3:
+            color = "#e2e619"; // Fair (Yellow)
+            break;
+        case 4:
+            color = "#49d508"; // Good (Light Green)
+            break;
+        case 5:
+            color = "green"; // Strong (Green)
+            break;
+        default:
+            color = "#c7340c"; // Default (Weakest Red)
+            break;
+    }
+
+    // Apply the color to the progress bar
+    bar.style.backgroundColor = color;
+}
 
 // Function to display feedback and update the strength bar
 function displayFeedback(result, container, bar) {
-    container.innerHTML = ""; // Clear previous feedback
+    // Clear previous feedback
+    container.innerHTML = "";
+
+    // Add feedback messages
     result.feedback.forEach(msg => {
         const li = document.createElement("li");
         li.textContent = msg;
         container.appendChild(li);
     });
 
+    // Update progress bar value and color
     bar.value = result.score;
-
     updateBarColor(bar, result.score);
 }
 
-
-
+// Function to toggle password visibility
 function togglePassword(inputId) {
     const passwordInput = document.getElementById(inputId);
-    const type = passwordInput.type === 'password' ? 'text' : 'password';
-    passwordInput.type = type;
+    if (passwordInput) {
+        passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+    } else {
+        console.error(`Input field with ID "${inputId}" not found.`);
+    }
 }
