@@ -52,8 +52,8 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = 'users.User'
 
 LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/user_home/'           # if user press login or logout button
-LOGOUT_REDIRECT_URL = '/'    # for the future updates
+LOGIN_REDIRECT_URL = '/user_home/'           
+LOGOUT_REDIRECT_URL = '/'    
 
 
 MIDDLEWARE = [

@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.hashers import check_password
 
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
@@ -40,14 +40,14 @@ class UserManager(BaseUserManager):
         return user
 
 class User(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(max_length=100, unique=True)  # שם המשתמש
-    email = models.EmailField(unique=True)  # אימייל (ייחודי)
-    password = models.CharField(max_length=128)  # סיסמה
-    password_history1 = models.CharField(max_length=128, blank=True, null=True)  # סיסמה קודמת 1
-    password_history2 = models.CharField(max_length=128, blank=True, null=True)  # סיסמה קודמת 2
-    password_history3 = models.CharField(max_length=128, blank=True, null=True)  # סיסמה קודמת 3
-    is_blocked = models.BooleanField(default=False)  # if the user is blocked
-    action_count = models.IntegerField(default=0)  # num of try to login
+    username = models.CharField(max_length=100, unique=True)  
+    email = models.EmailField(unique=True)  
+    password = models.CharField(max_length=128)  
+    password_history1 = models.CharField(max_length=128, blank=True, null=True)  
+    password_history2 = models.CharField(max_length=128, blank=True, null=True)  
+    password_history3 = models.CharField(max_length=128, blank=True, null=True)  
+    is_blocked = models.BooleanField(default=False)  
+    action_count = models.IntegerField(default=0)  # num of tries to login
     last_login = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=150, default='Unknown')  # Added to fix __str__ issue
 
@@ -70,11 +70,8 @@ class Client(models.Model):
     client_id = models.CharField(max_length=20,unique=True)
     client_name = models.CharField(max_length=100)
     client_address = models.TextField()
-    # client_created_at = models.DateTimeField(auto_now_add=True)
-    # client_tpdated_at = models.DateTimeField(auto_now_add=True)
     
-    def __str__(self):
-        # return f"{self.name} - {self.client_id}" 
+    def __str__(self): 
         return self.client_name
 
 
