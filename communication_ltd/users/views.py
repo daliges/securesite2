@@ -158,7 +158,8 @@ def change_password(request):
                 user.password_history1 = user.password
                 user.password = make_password(new_password)
                 user.save()
-                return HttpResponse(f"password of {username} changed successfuly")
+                # return HttpResponse(f"password of {username} changed successfuly")
+                return redirect('success_register')
             else:
                 user_login_management(user,CONFIG['time_to_block'])
                 return render(request, 'users/change_password.html',{
