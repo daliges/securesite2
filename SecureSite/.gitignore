@@ -1,3 +1,5 @@
 __pycache__/
 *.pyc
 *.env
+*.json
+communication_ltd\communication_ltd\users\static\config.json
