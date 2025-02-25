@@ -1,4 +1,3 @@
 __pycache__/
 *.pyc
 *.env
-communication_ltd/users/.env
