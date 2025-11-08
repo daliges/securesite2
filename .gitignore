@@ -1,0 +1,31 @@
+# Python/Django
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.Python
+build/
+dist/
+
+# Virtual environments & tooling
+.venv/
+venv/
+env/
+.mypy_cache/
+.pytest_cache/
+.coverage
+.DS_Store
+
+# Secrets/config
+.env
+.env.*
+config.json
+
+# Database/state
+db.sqlite3
+
+# Logs & media
+*.log
+logs/
+media/
+tmp/

@@ -1,0 +1,31 @@
+progress {
+    appearance: none;
+    height: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 100%;
+    border: none;
+}
+
+/* Default bar background */
+progress::-webkit-progress-bar {
+    background-color: #eee;
+}
+
+/* Default progress color */
+progress::-webkit-progress-value {
+    background-color: red;
+    transition: background-color 0.3s ease-in-out;
+}
+
+/* Firefox support */
+progress::-moz-progress-bar {
+    background-color: red;
+    transition: background-color 0.3s ease-in-out;
+}
+
+progress[value="1"]::-webkit-progress-value { background-color: #c7340c; } 
+progress[value="2"]::-webkit-progress-value { background-color: #ce7a0c; } 
+progress[value="3"]::-webkit-progress-value { background-color: #e2e619; } 
+progress[value="4"]::-webkit-progress-value { background-color: #49d508; } 
+progress[value="5"]::-webkit-progress-value { background-color: green; }

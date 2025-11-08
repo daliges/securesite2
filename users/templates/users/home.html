@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Communication_LTD - Employee Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            min-height: 100vh; /* Ensure full page height */
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 1rem 0;
+        }
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-size: 1.2rem;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        nav a:hover {
+            background-color: #007BFF;
+            color: #fff;
+        }
+        main {
+            flex: 1; /* Pushes footer down */
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding-bottom: 60px; /* Prevents footer overlap */
+        }
+        h2 {
+            border-bottom: 2px solid #007BFF;
+            padding-bottom: 10px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            padding: 5px 0;
+            font-size: 1.1rem;
+        }
+        ul li::before {
+            content: "✅ ";
+            color: green;
+        }
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: #333;
+            color: #fff;
+            width: 100%;
+            position: relative; /* Prevents covering content */
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Welcome to Communication_LTD</h1>
+    <p>Fast, reliable, and affordable internet tailored to your needs.</p>
+</header>
+
+<nav>
+    <a href="{% url 'login' %}">Log In</a>
+    <a href="{% url 'register' %}">Register</a>
+</nav>
+
+<main>
+    <section>
+        <h2>About Our Platform</h2>
+        <p>Welcome to <strong>Communication_LTD</strong>, the internal management platform designed exclusively for our employees. This system helps workers efficiently manage and track client information in one centralized place.</p>
+    </section>
+
+    <section>
+        <h2>Key Features</h2>
+        <ul>
+            <li>Client Management: Easily add, update, and remove client records.</li>
+            <li>Secure Access: Each worker has their own client database, ensuring privacy.</li>
+            <li>Fast & Reliable: Optimized for quick data retrieval and updates.</li>
+            <li>User-Friendly Interface: Simple and intuitive design for seamless navigation.</li>
+        </ul>
+        <p>This platform is built to <strong>streamline client interactions</strong> and enhance productivity for our employees. 🚀</p>
+    </section>
+</main>
+
+<footer>
+    <p>&copy; 2025 Communication_LTD. All Rights Reserved.</p>
+</footer>
+
+</body>
+</html>

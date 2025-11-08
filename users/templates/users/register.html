@@ -1,0 +1,139 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel ="stylesheet" href="{% static 'css/style.css' %}"> 
+    <script src="{% static 'js/password_strength.js' %}"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 400px;
+            margin: 5% auto;
+            padding: 2rem;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: #555;
+        }
+        input {
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        input:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+        button {
+            padding: 0.8rem;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            background-color: #ffdddd;
+            color: #d8000c;
+            margin-bottom: 1rem;
+            border: 1px solid #d8000c;
+            border-radius: 5px;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+        .login-link {
+            text-decoration: none;
+            color: #007BFF;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .password-container
+        {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .password-container .toggle-password {
+            position: relative;
+            bottom: 50px;
+            left: 350px;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Register</h2>
+
+    <!-- הצגת שגיאות -->
+    {% if errors %}
+        <div class="error">
+            <ul>
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'register' %}">
+        {% csrf_token %}
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Enter your username" required value="{{ username|default:'' }}">
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required value="{{ email|default:'' }}">
+        
+        <div  class="password-container">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            <button type="button" class="toggle-password" onclick="togglePassword('password')">👁️</button>
+        <!--<div id="password-strength-container"> -->
+            <progress id="password-strength-bar" value="0" max="5" style="width: 100%;"></progress>
+            <ul id="password-feedback" style="color: red; font-size: 0.9rem;"></ul>
+        <!-- <div id="strength-text" class="strength-text"> Password Strenght</div> -->
+        </div>
+
+        <button type="submit">Register</button>
+        <div class="login-link">
+            <a href="{% url 'login' %}">Back to login</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

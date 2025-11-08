@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to My App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+        }
+        header h1 {
+            color: rgb(47, 141, 248);
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: #f8f8f8;
+        }
+        nav .left-links {
+            display: flex;
+            gap: 1rem;
+        }
+        nav .right-links {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-size: 1.2rem;
+        }
+        nav a:hover {
+            color: #007BFF;
+        }
+        nav form {
+            margin: 0;
+        }
+        nav button {
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        nav button:hover {
+            background-color: #c9302c;
+        }
+        main {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: #333;
+            color: #fff;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Welcome to Communication_LTD</h1>
+    <p>Fast, reliable, and affordable internet tailored to your needs.</p>
+</header>
+
+<nav>
+    <div class="left-links">
+        <!-- Link to Clients Page -->
+        <a href="{% url 'clients_page' %}">Clients</a>
+    </div>
+    <div class="right-links">
+        <a href="{% url 'change_password' %}">Change Password</a>
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Logout</button>
+        </form>
+    </div>
+</nav>
+
+<main>
+    <h2>About our website</h2>
+    <p>
+        This website helps our team manage clients and update account details efficiently.
+    </p>
+
+    <p>This platform helps <strong>Communication_LTD employees</strong> manage clients efficiently.  
+        Each worker has a <strong>secure client database</strong> for easy tracking and updates.  
+        
+        With <strong>real-time data and secure access</strong>, managing accounts is simple and efficient. 🚀</p>
+</main>
+
+<footer>
+    <p>&copy; 2025 Communication_LTD. All Rights Reserved.</p>
+</footer>
+
+</body>
+</html>

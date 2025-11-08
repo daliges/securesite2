@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clients Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        header h1 {
+            color: rgb(248, 250, 248);
+            margin: 0;
+        }
+        nav {
+            background-color: #f4f4f4;
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 60px;
+            z-index: 999;
+            display: flex;
+            justify-content: center; /* Center content */
+            align-items: center; 
+            gap: 20px; /* Adds spacing */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        nav a, nav form {
+            display: inline-block;
+            text-decoration: none;
+            color: #333;
+            margin: 0 2rem;
+            font-size: 1.5rem;
+        }
+        nav a:hover {
+            color: #007BFF;
+        }
+        main {
+            max-width: 800px;
+            margin: 8rem auto 2rem auto;
+            padding: 1rem;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+        }
+        th {
+            background-color: #333;
+            color: #fff;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 0.5rem;
+            margin-top: 0.25rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 0.5rem 1rem;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Clients Management</h1>
+</header>
+
+<nav style="display: flex; justify-content: space-between; align-items: center; padding: 1rem;">
+    <!-- Home link aligned to the left -->
+    <a href="{% url 'user_home' %}" style="margin-left: 2rem;">Home</a>
+
+    <!-- Logout button aligned to the right -->
+    {% if user.is_authenticated %}
+    <form method="POST" action="{% url 'logout' %}" style="margin-right: 2rem;">
+        {% csrf_token %}
+        <button type="submit" style="background-color: red; color: white; border: none; padding: 10px 20px; font-size: 1rem; border-radius: 5px; cursor: pointer;">
+            Logout
+        </button>
+    </form>
+    {% endif %}
+</nav>
+
+<main>
+    <h2>Manage Clients</h2>
+
+    <!-- Login redirect hidden field -->
+    <form method="post" action="{% url 'clients_page' %}">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.GET.next|default:request.path }}">
+
+        <div class="form-group">
+            <label for="client-name">Name:</label>
+            <input type="text" id="client-name" name="client_name" placeholder="Enter client name">
+        </div>
+        <div class="form-group">
+            <label for="client-id">ID:</label>
+            <input type="text" id="client-id" name="client_id" placeholder="Enter client ID">
+        </div>
+        <div class="form-group">
+            <label for="client-address">Address:</label>
+            <input type="text" id="client-address" name="client_address" placeholder="Enter client address">
+        </div>
+        <button type="submit">Add Client</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>ID</th>
+                <th>Address</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="client-table">
+            {% for client in clients %}
+            <tr>
+                <td>{{ client.client_name }}</td>
+                <td>{{ client.client_id }}</td>
+                <td>{{ client.client_address }}</td>
+                <td>
+                    <form method="POST" action="{% url 'clients_page' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="delete_client" value="{{ client.client_id }}">
+                        <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No clients found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</main>
+
+<script>
+    function addClient() {
+        const name = document.getElementById('client-name').value;
+        const id = document.getElementById('client-id').value;
+        const address = document.getElementById('client-address').value;
+        
+        if (name && id && address) {
+            const table = document.getElementById('client-table');
+            const row = table.insertRow();
+            row.innerHTML = `<td>${name}</td><td>${id}</td><td>${address}</td><td><button onclick='deleteClient(this)'>Delete</button></td>`;
+            
+            document.getElementById('client-name').value = '';
+            document.getElementById('client-id').value = '';
+            document.getElementById('client-address').value = '';
+        } else {
+            alert('Please fill in all fields.');
+        }
+    }
+    
+    function deleteClient(btn) {
+        btn.parentElement.parentElement.remove();
+    }
+</script>
+
+</body>
+</html>
