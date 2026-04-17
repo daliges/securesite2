@@ -29,9 +29,9 @@ EMAIL_SENDER = os.getenv('EMAIL_SENDER_EMAIL')
 SECRET_KEY = os.getenv('EMAIL_SECRET_KEY', 'default-fallback-secret-key') ##### HMAC
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['securesite2.onrender.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
