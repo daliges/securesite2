@@ -1,6 +1,6 @@
 from django.shortcuts import render , HttpResponse, redirect
 from django.contrib.auth import login as auth_login, logout
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
@@ -14,7 +14,9 @@ from datetime import datetime, timedelta
 from django.contrib.auth.models import AnonymousUser
 
 
-with open(r"communication_ltd/config.json", "r") as file:
+import os as _os
+_CONFIG_PATH = _os.path.join(_os.path.dirname(_os.path.dirname(__file__)), 'config.json')
+with open(_CONFIG_PATH, "r") as file:
     CONFIG = json.load(file)
 
 # functions to call html file of home page
@@ -267,6 +269,9 @@ def user_home(request):      # # functions to call html file of home page
 
 def account(request):
     return render(request, 'users/account.html')
+
+def password_policy(request):
+    return JsonResponse(CONFIG["password_policy"])
 
 def clients_page(request):
     

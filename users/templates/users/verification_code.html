@@ -1,101 +1,43 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>write_verification_code</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        .container {
-            max-width: 400px;
-            margin: 5% auto;
-            padding: 2rem;
-            background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            text-align: center;
-        }
-        img {
-            width: 80px;
-            margin-bottom: 1rem;
-        }
-        h2 {
-            margin-bottom: 1rem;
-            color: #333;
-        }
-        p {
-            color: #555;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-        .error, .success {
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 5px;
-            text-align: center;
-        }
-        .error {
-            background-color: #ffdddd;
-            color: #d8000c;
-        }
-        .success {
-            background-color: #ddffdd;
-            color: #4CAF50;
-        }
-        input {
-            width: 100%;
-            padding: 0.8rem;
-            margin-bottom: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-        button {
-            padding: 0.8rem;
-            background-color: #007BFF;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            font-size: 1rem;
-            cursor: pointer;
-            width: 100%;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .forgot-password-link a {
-            text-decoration: none;
-            color: #007BFF;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enter Verification Code — Communication_LTD</title>
+  <link rel="stylesheet" href="{% static 'css/clean.css' %}">
 </head>
-<body>
+<body class="auth-page">
 
-<div class="container">
-    <h2>write verification code</h2>
-    <p>Enter your verification code, that  you got.</p>
+  <div class="auth-logo"><a href="/" style="text-decoration:none;color:inherit;">Comm<span>LTD</span></a></div>
 
-    <!-- Display success or error messages -->
-    {% if success %}
-        <div class="success">{{ success }}</div>
-    {% elif error %}
-        <div class="error">{{ error }}</div>
-    {% endif %}
+  <div class="auth-card">
+    <div class="card">
+      <h1 class="auth-title">Check your email</h1>
+      <p class="auth-subtitle">Enter the 6-digit code we sent to your email address. The code expires in 5 minutes.</p>
 
-    <form method="post" action="">
+      {% if success %}
+        <div class="alert alert--success" role="alert">{{ success }}</div>
+      {% elif error %}
+        <div class="alert alert--error" role="alert">{{ error }}</div>
+      {% endif %}
+
+      <form method="post" action="">
         {% csrf_token %}
-        <input type="password" name="verification_code" placeholder="Enter your verification code" required>
-        <button type="submit">submit</button>
-    </form>
-    <div class="forgot_password-link">
-        <p>Don't get verification code? <a href="{% url 'forgot_password' %}">click here</a>.</p>
+        <div class="field">
+          <label class="label" for="verification_code">Verification Code</label>
+          <input class="input mono" type="password" id="verification_code" name="verification_code"
+                 placeholder="••••••" maxlength="6" required autocomplete="one-time-code"
+                 style="letter-spacing:.25em; font-size:1.25rem; text-align:center;">
+        </div>
+        <button type="submit" class="btn btn--primary btn--full">Verify Code</button>
+      </form>
+
+      <div class="mt-16 text-center">
+        <p class="text-sm text-muted">Didn't receive a code? <a href="{% url 'forgot_password' %}">Try again</a></p>
+      </div>
     </div>
-</div>
+  </div>
 
 </body>
 </html>

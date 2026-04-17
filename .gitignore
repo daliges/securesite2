@@ -1,31 +1,60 @@
-# Python/Django
+# Python
 __pycache__/
 *.py[cod]
+*.pyo
 *.so
+*.egg
 *.egg-info/
 .Python
-build/
-dist/
 
-# Virtual environments & tooling
-.venv/
+# Virtual environments
 venv/
+.venv/
 env/
-.mypy_cache/
-.pytest_cache/
-.coverage
-.DS_Store
+ENV/
 
-# Secrets/config
+# Django
+db.sqlite3
+*.sqlite3
+media/
+staticfiles/
+local_settings.py
+
+# Secrets & config
 .env
 .env.*
 config.json
+*.crt
+*.key
+*.pem
 
-# Database/state
-db.sqlite3
+# Build / dist
+build/
+dist/
+*.whl
 
-# Logs & media
+# Tooling caches
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+.ruff_cache/
+
+# Logs & temp
 *.log
 logs/
-media/
 tmp/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Claude
+.agents/
+CLAUDE.md

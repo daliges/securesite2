@@ -1,31 +1,25 @@
+/* Legacy style.css — all password strength styles now live in clean.css */
+/* Kept for backwards-compatibility with any external references */
+
 progress {
-    appearance: none;
-    height: 20px;
-    border-radius: 10px;
-    overflow: hidden;
-    width: 100%;
-    border: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 99px;
+  overflow: hidden;
+  width: 100%;
+  border: none;
 }
+progress::-webkit-progress-bar  { background-color: #E5E7EB; border-radius: 99px; }
+progress::-webkit-progress-value { border-radius: 99px; transition: background-color 0.3s ease; }
+progress::-moz-progress-bar      { border-radius: 99px; transition: background-color 0.3s ease; }
 
-/* Default bar background */
-progress::-webkit-progress-bar {
-    background-color: #eee;
-}
-
-/* Default progress color */
-progress::-webkit-progress-value {
-    background-color: red;
-    transition: background-color 0.3s ease-in-out;
-}
-
-/* Firefox support */
-progress::-moz-progress-bar {
-    background-color: red;
-    transition: background-color 0.3s ease-in-out;
-}
-
-progress[value="1"]::-webkit-progress-value { background-color: #c7340c; } 
-progress[value="2"]::-webkit-progress-value { background-color: #ce7a0c; } 
-progress[value="3"]::-webkit-progress-value { background-color: #e2e619; } 
-progress[value="4"]::-webkit-progress-value { background-color: #49d508; } 
-progress[value="5"]::-webkit-progress-value { background-color: green; }
+progress[value="1"]::-webkit-progress-value { background-color: #EF4444; }
+progress[value="2"]::-webkit-progress-value { background-color: #F97316; }
+progress[value="3"]::-webkit-progress-value { background-color: #EAB308; }
+progress[value="4"]::-webkit-progress-value { background-color: #84CC16; }
+progress[value="5"]::-webkit-progress-value { background-color: #16A34A; }
+progress[value="1"]::-moz-progress-bar { background-color: #EF4444; }
+progress[value="2"]::-moz-progress-bar { background-color: #F97316; }
+progress[value="3"]::-moz-progress-bar { background-color: #EAB308; }
+progress[value="4"]::-moz-progress-bar { background-color: #84CC16; }
+progress[value="5"]::-moz-progress-bar { background-color: #16A34A; }

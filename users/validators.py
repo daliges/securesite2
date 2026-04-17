@@ -1,9 +1,11 @@
 import json
+import os
 import re
 from django.core.exceptions import ValidationError
 
 # קריאת קובץ JSON
-with open(r'communication_ltd/config.json', 'r') as config_file:
+_CONFIG_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config.json')
+with open(_CONFIG_PATH, 'r') as config_file:
     CONFIG = json.load(config_file)
 
 class CustomPasswordValidator:

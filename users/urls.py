@@ -16,5 +16,6 @@ urlpatterns = [
     path('user-home/clients/', views.clients_page, name='clients_page'),
 
     path('logout/', LogoutView.as_view(next_page="/"), name='logout'), # build in django function in settings
+    path('api/password-policy/', views.password_policy, name='password_policy'),
     
 ]

@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent
 
 load_dotenv()
 
@@ -66,7 +66,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'communication_ltd.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATES = [
     {
@@ -84,7 +84,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'communication_ltd.wsgi.application'
+WSGI_APPLICATION = 'wsgi.application'
 
 
 # Database
@@ -144,10 +144,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / "static"]  # Ensure this is correct
 
 
-SECURE_SSL_REDIRECT = True  # ניתוב בקשות HTTP ל-HTTPS
+SECURE_SSL_REDIRECT = False  # ניתוב בקשות HTTP ל-HTTPS
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'  # Store sessions in the cookies
 SESSION_COOKIE_AGE = 1209600  # Sessions expire after 2 weeks (in seconds)
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Keep session active after browser close
