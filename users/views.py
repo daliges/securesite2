@@ -7,23 +7,20 @@ from django.core.exceptions import ValidationError
 from .models import User, Client
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.password_validation import CommonPasswordValidator 
+import os
 import random
 import json
 from users.utils import *
 from datetime import datetime, timedelta
 from django.contrib.auth.models import AnonymousUser
 
-
-import os as _os
-_CONFIG_PATH = _os.path.join(_os.path.dirname(_os.path.dirname(__file__)), 'config.json')
+_CONFIG_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config.json')
 with open(_CONFIG_PATH, "r") as file:
     CONFIG = json.load(file)
 
-# functions to call html file of home page
-def home(request):       
+def home(request):
     return render(request, 'users/home.html')
 
-# page of registeration
 def register(request):
     if request.method == 'POST':
         username = request.POST.get('username')     
@@ -48,7 +45,7 @@ def register(request):
             validate_password(password)
         except ValidationError as e:
             return render(request, 'users/register.html', {
-                'errors': e.messages,  # Pass validation error messages to the template
+                'errors': e.messages,
                 'username': username,
                 'email': email
             })
@@ -59,7 +56,6 @@ def register(request):
         return redirect('success_register')
     return render(request, 'users/register.html')
 
-# page of login 
 def login(request):
     next_url = request.GET.get('next', '/user-home/')  # Redirect to intended page or home by default
 
@@ -71,23 +67,20 @@ def login(request):
         try:
             user = User.objects.get(username=username)
 
-            if hasattr(user, 'is_blocked') and user.is_blocked: # added hasattr to handle 2 cases
+            if hasattr(user, 'is_blocked') and user.is_blocked:
                 return  render(request, 'users/login.html',{
                                    'error': f"{username} is blocked for a {int(CONFIG['time_to_block']/60)} minutes",
                                    })
             if user.user_check_password(password):
                 user.action_count = 0
 
-                # Authenticate and log in the user using Django's session framework
                 auth_login(request, user)
 
-                # Remember Me logic
                 if remember_me:
-                    request.session.set_expiry(1209600)  # 2 weeks
+                    request.session.set_expiry(1209600)
                 else:
-                    request.session.set_expiry(0)  # Expire on browser close
+                    request.session.set_expiry(0)
 
-                # Redirect the user accordingly
                 return HttpResponseRedirect(request.POST.get('next', next_url))
             else:
                 user_login_management(user,CONFIG['time_to_block'])
@@ -99,12 +92,10 @@ def login(request):
             return render(request, 'users/login.html', {'error': "User or Password does not exist"})
     return render(request, 'users/login.html', {'next': next_url})
 
-# page of succession    
 def success_register(request):
     return render(request, 'users/success_register.html')
 
 
-# page of changing password by username and current password 
 def change_password(request):
     if request.method == 'POST':
         username = request.POST.get("username")
@@ -160,7 +151,6 @@ def change_password(request):
                 user.password_history1 = user.password
                 user.password = make_password(new_password)
                 user.save()
-                # return HttpResponse(f"password of {username} changed successfuly")
                 return redirect('success_register')
             else:
                 user_login_management(user,CONFIG['time_to_block'])
@@ -172,29 +162,22 @@ def change_password(request):
             return render(request, 'users/change_password.html', {'errors': ["User or password does not exist"]})
     return render(request, 'users/change_password.html') 
 
-# page of forgot password | get the email for verfication 
 verification_codes = {}
 def forgot_password(request):
     if request.method == 'POST':
         email = request.POST.get('email')
-        user_verification_code = request.POST.get('email')
         try:
             user = User.objects.get(email=email)
-            # Generate a verification code
-            verification_code = str(random.randint(100000, 999999)) 
-            # Save the code to the user (אופציונלי)
+            verification_code = str(random.randint(100000, 999999))
             verification_codes[user.email] = verification_code
             user.save()
-            # Send email
             request.session['user_email'] = email
             send_reset_email(user.email, verification_code)
             return redirect('write_verification_code')
-            #return render(request, 'users/verification_code.html', {'success': 'Verification code sent to your email.'})
         except User.DoesNotExist:
             return render(request, 'users/forgot_password.html', {'error': 'Email does not exist.'})
     return render(request, 'users/forgot_password.html')
 
-# page of verfication by verfication code that sent to the email
 def write_verification_code(request):
     if request.method == 'POST':
         verification_code = request.POST.get('verification_code')
@@ -206,16 +189,14 @@ def write_verification_code(request):
             del verification_codes[email]
             request.session['verified_user'] = email
             request.session['verification_code_verified'] = True
-            request.session['verification_code_timestamp'] = datetime.now().isoformat()  # שמור זמן יצירת האימות
-            request.session['verified_user'] = email
+            request.session['verification_code_timestamp'] = datetime.now().isoformat()
             return redirect('change_password_after_verfication_code')
         else:
             return render(request, 'users/verification_code.html', {'error': 'Invalid verfication code. Please try again.'})
     return render(request, 'users/verification_code.html')
 
- # page of changing password by verfication email by verfication code
 def change_password_after_verfication_code(request):
-    email = request.session.get('verified_user')  # בדוק אם המשתמש אומת
+    email = request.session.get('verified_user')
     verification_verified = request.session.get('verification_code_verified')
     code_time = request.session.get('verification_code_timestamp')
     if not email or not verification_verified or not code_time:  
@@ -264,22 +245,22 @@ def change_password_after_verfication_code(request):
     return render(request, 'users/change_password_after_verification_code.html')
 
 
-def user_home(request):      # # functions to call html file of home page 
+def user_home(request):
     return render(request, 'users/user_home.html')
 
 def account(request):
     return render(request, 'users/account.html')
 
 def password_policy(request):
-    return JsonResponse(CONFIG["password_policy"])
+    response = JsonResponse(CONFIG["password_policy"])
+    response["Cache-Control"] = "public, max-age=3600"
+    return response
 
 def clients_page(request):
-    
-    # Ensure the user is authenticated before proceeding
-    if not request.user or isinstance(request.user, AnonymousUser):
+    if isinstance(request.user, AnonymousUser):
         return redirect('login')
 
-    user = request.user  # Now safe to use as user is authenticated 
+    user = request.user
 
     if request.method == 'POST':
         if 'delete_client' in request.POST:

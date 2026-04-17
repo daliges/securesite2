@@ -1,6 +1,3 @@
-/* Legacy style.css — all password strength styles now live in clean.css */
-/* Kept for backwards-compatibility with any external references */
-
 progress {
   appearance: none;
   height: 6px;
